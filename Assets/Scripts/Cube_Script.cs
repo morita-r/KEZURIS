@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Destroy_Cube : MonoBehaviour {
+public class Cube_Script : MonoBehaviour {
 
     public GameObject Cube;
     public GameObject Fragment;
@@ -22,7 +22,7 @@ public class Destroy_Cube : MonoBehaviour {
     private void Clicked()
     {
         Vector3 clicked_pos = Input.mousePosition;
-        clicked_pos.z = 10;
+        clicked_pos.z = transform.position.z+18;
         if (Cube.transform.position.x - 0.5f < Camera.main.ScreenToWorldPoint(clicked_pos).x
             && Cube.transform.position.x + 0.5f > Camera.main.ScreenToWorldPoint(clicked_pos).x
             && Cube.transform.position.y - 0.5f < Camera.main.ScreenToWorldPoint(clicked_pos).y
