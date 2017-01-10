@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,12 +7,15 @@ public class Cube_Script : MonoBehaviour {
 
     public GameObject Cube;
     public GameObject Fragment;
-
+    public int[]id;
 	// Use this for initialization
 	void Start () {
 		
 	}
-	
+
+    public void set_Id(int[] _id) {
+        id = _id;
+    }
 	// Update is called once per frame
 	void Update () {
         if (Input.GetMouseButtonUp(0))
@@ -32,7 +35,15 @@ public class Cube_Script : MonoBehaviour {
 
     private void Cube_Clicked() {
         Destroy(Cube);
-        GameObject frag_temp = Instantiate(Fragment,new Vector3(),Quaternion.identity);
-        frag_temp.GetComponent<Rigidbody>().AddForce(new Vector3(), ForceMode.VelocityChange);
+        transform.parent.GetComponent<Cubes_Script>().Cube_Destroyed(id);
+        for (float x = -0.5f; x < 0.5f; x+=0.25f)
+            for (float y = -0.5f; y < 0.5f; y+=0.25f)
+            {
+                Vector3 pos = transform.position;
+                pos.x += x;
+                pos.y += y;
+                GameObject frag_temp = Instantiate(Fragment, pos, Quaternion.identity);
+                frag_temp.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-4.0f,4.0f), Random.Range(-4.0f, 4.0f),5), ForceMode.VelocityChange);
+            }
     }
 }

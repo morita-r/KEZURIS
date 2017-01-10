@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Generate_Cube : MonoBehaviour {
 
@@ -24,11 +22,21 @@ public class Generate_Cube : MonoBehaviour {
 
     private void Initialize_Cubes() {
         GameObject Parent = Instantiate(Parent_Cubes);
-        int[,] list = new int[3, 10];
-        for (int s = 0; s < 3; s++)
-            for (int t = 0; t < 10; t++)
-                if((s+t)%3==0)
-                list[s, t] = 1;
+        int[,] list = new int[10, 3];
+
+
+        //Generate_Sample
+        /*        for (int s = 0; s < 3; s++)
+                    for (int t = 0; t < 10; t++)
+                        if((s+t)%3==0)
+                        list[t, s] = 1;
+                        */
+
+        list[3, 0] = 1;
+        list[3, 1] = 1;
+        list[2, 1] = 1;
+        list[2, 2] = 1;
+
         Generate_Cubes(Parent, list);
     }
 
@@ -39,10 +47,12 @@ public class Generate_Cube : MonoBehaviour {
         {
             for (int t = 0; t < 10; t++)
             {
-                if (list[s, t] == 1)
+                if (list[t, s] == 1)
                 {
                     GameObject child = Instantiate(Cube, new Vector3(t-4.5f, s, 5), Quaternion.identity);
                     child.transform.parent = Parent.transform;
+                    int[] _id = new int[2] {t,s};
+                    child.GetComponent<Cube_Script>().set_Id(_id);
                     
                 }
             }
