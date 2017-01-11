@@ -31,13 +31,18 @@ public class Cubes_Script : MonoBehaviour {
                 if (Check_underBlock(transform.GetChild(n)))//下にブロックありor壁
                 {
                     stop_flag = true;
+                    //縦ポジション丸め込み（位置調整）
+                    Vector3 pos_Cubes = transform.position;
+                    pos_Cubes.y = Mathf.RoundToInt(pos_Cubes.y);
+                    transform.position = pos_Cubes;
+
                     Falled_Management.List_Update(transform);//Falledのリストアップデート
-                    break;
-                }
-                else {
-                    pos.y -= 0.1f;
+                    return;
                 }
             }
+            pos.y -= 0.1f;
+            transform.position = pos;
+
         }
         else {//制御可能
             pos.z -= 0.05f;
@@ -55,11 +60,11 @@ public class Cubes_Script : MonoBehaviour {
                 Generate_Cube.generate = true;
                 Destroy(gameObject);
             }
+            transform.position = pos;
         }
-        transform.position = pos;
 
-        
-        
+
+
     }
 
     private void Move_Right()
@@ -126,12 +131,14 @@ public class Cubes_Script : MonoBehaviour {
     private bool Check_underBlock(Transform block) {//まだ落ちるかどうかを判定
         int depth=0;
         for (int i = 19; i > 0; i--) {
-            if (Falled_Management.list[(int)(block.position.x+5.5), i] == 1) {//一番上のブロックを探索
-                depth = i;
+            if (Falled_Management.list[(int)(block.position.x+4.5), i] == 1) {//一番上のブロックを探索
+                depth = i+1;
+                break;
             }
         }
         if(block.position.y < -20+depth)
             return true;
         return false;
     }
+
 }
