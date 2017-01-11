@@ -16,6 +16,7 @@ public class Cube_Script : MonoBehaviour {
     public void set_Id(int[] _id) {
         id = _id;
     }
+    public int[] get_Id() { return id; }
 	// Update is called once per frame
 	void Update () {
         if (Input.GetMouseButtonUp(0))

@@ -4,23 +4,31 @@ public class Generate_Cube : MonoBehaviour {
 
     public GameObject Parent_Cubes;
     public GameObject Cube;
+    public static bool generate;
 
 
 
 	// Use this for initialization
 	void Start () {
-		
+        generate = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        if (generate)
+        {
+            Initialize_Cubes();
+        }
         if (Input.GetKeyDown("space"))
         {
             Initialize_Cubes();
         }
+
+
     }
 
     private void Initialize_Cubes() {
+        generate = false;
         GameObject Parent = Instantiate(Parent_Cubes);
         int[,] list = new int[10, 3];
 

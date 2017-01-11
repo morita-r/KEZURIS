@@ -4,6 +4,7 @@ public class Cubes_Script : MonoBehaviour {
 
     public int[,] cube_list;//if 0:broken or null 1:exist
     bool fall_flag = false;
+    bool stop_flag = false;
 
     public void Initialize(int[,] list)
     {
@@ -18,21 +19,47 @@ public class Cubes_Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (stop_flag)
+            return;
+
         Vector3 pos = transform.position;
-        if (fall_flag)
+        if (fall_flag)//落下中
         {
-            pos.y -= 0.1f;
+            for (int n = 0; n < transform.childCount; n++)
+            {
+                if (Check_underBlock(transform.GetChild(n)))//下にブロックありor壁
+                {
+                    stop_flag = true;
+                    Falled_Management.List_Update(transform);//Falledのリストアップデート
+                    break;
+                }
+                else {
+                    pos.y -= 0.1f;
+                }
+            }
         }
-        else {
-            pos.z -= 0.01f;
+        else {//制御可能
+            pos.z -= 0.05f;
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                Move_Right();
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+                Move_Left();
             if (pos.z < -10.5f)
+            {
                 fall_flag = true;
+                Generate_Cube.generate = true;
+            }
+            if (transform.childCount == 0)
+            {//全部削除された
+                Generate_Cube.generate = true;
+                Destroy(gameObject);
+            }
         }
         transform.position = pos;
-        if (Input.GetKeyDown(KeyCode.RightArrow)) 
-            Move_Right();
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-            Move_Left();
+
+        
+        
     }
 
     private void Move_Right()
@@ -94,5 +121,17 @@ public class Cubes_Script : MonoBehaviour {
     public void Cube_Destroyed(int[] _id){
         Debug.Log("ID:(" + _id[0].ToString() + "," + _id[1].ToString() + ") Destroyed.");
         cube_list[_id[0], _id[1]] = 0;
+    }
+
+    private bool Check_underBlock(Transform block) {//まだ落ちるかどうかを判定
+        int depth=0;
+        for (int i = 19; i > 0; i--) {
+            if (Falled_Management.list[(int)(block.position.x+5.5), i] == 1) {//一番上のブロックを探索
+                depth = i;
+            }
+        }
+        if(block.position.y < -20+depth)
+            return true;
+        return false;
     }
 }
