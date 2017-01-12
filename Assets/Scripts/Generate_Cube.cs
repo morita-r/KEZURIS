@@ -61,7 +61,8 @@ public class Generate_Cube : MonoBehaviour {
                     child.transform.parent = Parent.transform;
                     int[] _id = new int[2] {t,s};
                     child.GetComponent<Cube_Script>().set_Id(_id);
-                    
+                    int[] fallen_id = new int[2] { -1, -1 };
+                    child.GetComponent<Cube_Script>().set_Fallen_Id(fallen_id);
                 }
             }
         }

@@ -7,7 +7,8 @@ public class Cube_Script : MonoBehaviour {
 
     public GameObject Cube;
     public GameObject Fragment;
-    public int[]id;
+    public int[] id;
+    public int[] fallen_id;
 	// Use this for initialization
 	void Start () {
 		
@@ -16,6 +17,16 @@ public class Cube_Script : MonoBehaviour {
     public void set_Id(int[] _id) {
         id = _id;
     }
+
+    public void set_Fallen_Id(int[] _Fallen_id) {
+        fallen_id = _Fallen_id;
+    }
+
+    public void Destroy_Cube() {
+        Destroy(gameObject);
+    }
+
+    public int[] get_fallen_id() { return fallen_id; }
     public int[] get_Id() { return id; }
 	// Update is called once per frame
 	void Update () {
@@ -46,5 +57,14 @@ public class Cube_Script : MonoBehaviour {
                 GameObject frag_temp = Instantiate(Fragment, pos, Quaternion.identity);
                 frag_temp.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-4.0f,4.0f), Random.Range(-4.0f, 4.0f),5), ForceMode.VelocityChange);
             }
+    }
+
+    public void Down_Cube() {
+        //position下げる
+        Vector3 pos = transform.position;
+        pos.y -= 1;
+        transform.position = pos;
+        //fallen_idの更新
+        fallen_id[1]--;
     }
 }

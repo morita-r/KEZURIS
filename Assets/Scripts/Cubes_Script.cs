@@ -5,6 +5,8 @@ public class Cubes_Script : MonoBehaviour {
     public int[,] cube_list;//if 0:broken or null 1:exist
     bool fall_flag = false;
     bool stop_flag = false;
+    public float slide_speed;
+    public float fall_speed;
 
     public void Initialize(int[,] list)
     {
@@ -36,16 +38,21 @@ public class Cubes_Script : MonoBehaviour {
                     pos_Cubes.y = Mathf.RoundToInt(pos_Cubes.y);
                     transform.position = pos_Cubes;
 
+
+
                     Falled_Management.List_Update(transform);//Falledのリストアップデート
+                    Falled_Management.Check_Line();//列確認
+                    //列削除（リストアップデート）
+                    //段下げる
                     return;
                 }
             }
-            pos.y -= 0.1f;
+            pos.y -= fall_speed;
             transform.position = pos;
 
         }
         else {//制御可能
-            pos.z -= 0.05f;
+            pos.z -= slide_speed;
             if (Input.GetKeyDown(KeyCode.RightArrow))
                 Move_Right();
             if (Input.GetKeyDown(KeyCode.LeftArrow))
