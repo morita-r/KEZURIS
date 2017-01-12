@@ -3,9 +3,8 @@
 public class Generate_Cube : MonoBehaviour {
 
     public GameObject Parent_Cubes;
-    public GameObject Cube;
     public static bool generate;
-
+    public GameObject[] Prefab_Cubes; 
 
 
 	// Use this for initialization
@@ -31,25 +30,14 @@ public class Generate_Cube : MonoBehaviour {
         generate = false;
         GameObject Parent = Instantiate(Parent_Cubes);
         int[,] list = new int[10, 3];
+        int param = Random.Range(0, 10);
+        list = Placement.return_list(param);
 
-
-        //Generate_Sample
-        /*        for (int s = 0; s < 3; s++)
-                    for (int t = 0; t < 10; t++)
-                        if((s+t)%3==0)
-                        list[t, s] = 1;
-                        */
-
-        list[3, 0] = 1;
-        list[3, 1] = 1;
-        list[2, 1] = 1;
-        list[2, 2] = 1;
-
-        Generate_Cubes(Parent, list);
+        Generate_Cubes(Parent, list,param);
     }
 
 
-    private void Generate_Cubes(GameObject Parent,int[,]list) {
+    private void Generate_Cubes(GameObject Parent,int[,]list,int param) {
         Parent.GetComponent<Cubes_Script>().Initialize(list);
         for (int s = 0; s < 3; s++)
         {
@@ -57,7 +45,7 @@ public class Generate_Cube : MonoBehaviour {
             {
                 if (list[t, s] == 1)
                 {
-                    GameObject child = Instantiate(Cube, new Vector3(t-4.5f, s, 5), Quaternion.identity);
+                    GameObject child = Instantiate(Prefab_Cubes[param], new Vector3(t - 4.5f, s, 5), Quaternion.identity);
                     child.transform.parent = Parent.transform;
                     int[] _id = new int[2] {t,s};
                     child.GetComponent<Cube_Script>().set_Id(_id);
