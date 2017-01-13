@@ -18,7 +18,7 @@ public class Falled_Management : MonoBehaviour {
         for (int i = 0; i < Cubes.childCount; i++){//Cubesの子のポジションを元にリストに追加
             int[] _id = Cubes.GetChild(i).GetComponent<Cube_Script>().get_Id();
             int[] set_id = new int[2] { _id[0], (int)(_id[1] + 20 + Mathf.Round(Cubes.position.y)) };
-            list[_id[0], (int)(_id[1] + 20 + Mathf.Round(Cubes.position.y))] = 1;
+            list[_id[0], (int)(_id[1] + 20 + Mathf.Round(Cubes.position.y + (10 * Mathf.Tan(Mathf.PI / 6))))] = 1;
             Cubes.GetChild(i).GetComponent<Cube_Script>().set_Fallen_Id(set_id);
         }
     }

@@ -37,7 +37,7 @@ public class Cube_Script : MonoBehaviour {
     public void Clicked()
     {
         Vector3 clicked_pos = Input.mousePosition;
-        clicked_pos.z = transform.position.z+29;
+        clicked_pos.z = transform.position.z+28;
         if (Cube.transform.position.x - 0.5f < Camera.main.ScreenToWorldPoint(clicked_pos).x
             && Cube.transform.position.x + 0.5f > Camera.main.ScreenToWorldPoint(clicked_pos).x
             && Cube.transform.position.y - 0.5f < Camera.main.ScreenToWorldPoint(clicked_pos).y

@@ -16,7 +16,10 @@ public class Cubes_Script : MonoBehaviour {
     const int TOUCH = 0;
     const int SWIPE_RIGHT = 1;
     const int SWIPE_LEFT = 2;
+    const int SWIPE_DOWN = 3;
     const int NO_INPUT = -1;
+
+    public static bool pause = false;
     public void Initialize(int[,] list)
     {
         cube_list = list;
@@ -30,6 +33,14 @@ public class Cubes_Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            pause = !pause;
+        }
+        if (pause)
+            return;
+
+
 
         if (stop_flag)
             return;
@@ -62,6 +73,7 @@ public class Cubes_Script : MonoBehaviour {
         }
         else {//制御可能
             pos.z -= slide_speed;
+            pos.y -= slide_speed * Mathf.Tan(Mathf.PI/6);
             switch (Input_Manager()) {
                 case NO_INPUT:
                     break;
@@ -70,6 +82,10 @@ public class Cubes_Script : MonoBehaviour {
                     break;
                 case SWIPE_LEFT:
                     Move_Left();
+                    break;
+                case SWIPE_DOWN:
+                    Move_Down();
+                    return;
                     break;
                 case TOUCH:
                     for (int n = 0; n < transform.childCount; n++)
@@ -84,8 +100,9 @@ public class Cubes_Script : MonoBehaviour {
                 Move_Right();
             if (Input.GetKeyDown(KeyCode.LeftArrow))
                 Move_Left();
-            if (pos.z < -10.5f)
+            if (pos.z < -10.1f)
             {
+                pos.z = -10.1f;
                 fall_flag = true;
                 Generate_Cube.generate = true;
             }
@@ -157,6 +174,16 @@ public class Cubes_Script : MonoBehaviour {
         }
 
     }
+
+    void Move_Down() {
+        Vector3 pos = transform.position;
+        pos.y = -5.8f;
+        pos.z = -10.1f;
+        fall_flag = true;
+        Generate_Cube.generate = true;
+        transform.position = pos;
+
+    }
     public void Cube_Destroyed(int[] _id){
         Debug.Log("ID:(" + _id[0].ToString() + "," + _id[1].ToString() + ") Destroyed.");
         cube_list[_id[0], _id[1]] = 0;
@@ -207,7 +234,13 @@ public class Cubes_Script : MonoBehaviour {
             //左向きにフリック
             touch_mode = SWIPE_LEFT;
         }
-        else {
+        else if (-30 > directionY) {
+            //下向きにフリック
+            touch_mode = SWIPE_DOWN;
+            //一気に落ちるやつ
+        }
+        else
+        {
             touch_mode = TOUCH;
         }
 
