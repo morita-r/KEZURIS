@@ -8,6 +8,15 @@ public class Cubes_Script : MonoBehaviour {
     public float slide_speed;
     public float fall_speed;
 
+    Vector3 touch_start_pos;
+    Vector3 touch_end_pos;
+
+    int touch_mode;
+
+    const int TOUCH = 0;
+    const int SWIPE_RIGHT = 1;
+    const int SWIPE_LEFT = 2;
+    const int NO_INPUT = -1;
     public void Initialize(int[,] list)
     {
         cube_list = list;
@@ -53,6 +62,24 @@ public class Cubes_Script : MonoBehaviour {
         }
         else {//制御可能
             pos.z -= slide_speed;
+            switch (Input_Manager()) {
+                case NO_INPUT:
+                    break;
+                case SWIPE_RIGHT:
+                    Move_Right();
+                    break;
+                case SWIPE_LEFT:
+                    Move_Left();
+                    break;
+                case TOUCH:
+                    for (int n = 0; n < transform.childCount; n++)
+                    {
+                        transform.GetChild(n).GetComponent<Cube_Script>().Clicked();
+                    }
+                    break;
+            }
+
+
             if (Input.GetKeyDown(KeyCode.RightArrow))
                 Move_Right();
             if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -148,4 +175,46 @@ public class Cubes_Script : MonoBehaviour {
         return false;
     }
 
+    private int Input_Manager() {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            touch_start_pos = new Vector3(Input.mousePosition.x,
+                                        Input.mousePosition.y,
+                                        Input.mousePosition.z);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            touch_end_pos = new Vector3(Input.mousePosition.x,
+                                      Input.mousePosition.y,
+                                      Input.mousePosition.z);
+            return GetDirection();
+        }
+        return NO_INPUT;
+    }
+
+    private int GetDirection() {
+        float directionX = touch_end_pos.x - touch_start_pos.x;
+        float directionY = touch_end_pos.y - touch_start_pos.y;
+
+        if (30 < directionX)
+        {
+            //右向きにフリック
+            touch_mode = SWIPE_RIGHT;
+        }
+        else if (-30 > directionX)
+        {
+            //左向きにフリック
+            touch_mode = SWIPE_LEFT;
+        }
+        else {
+            touch_mode = TOUCH;
+        }
+
+        return touch_mode;
+    }
 }
+
+
+
+
