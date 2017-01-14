@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Falled_Management : MonoBehaviour {
     public static int[,] list;
@@ -26,6 +27,7 @@ public class Falled_Management : MonoBehaviour {
     public static void Check_Line()
     {
         bool flag;
+        int line_num = 0;
         for (int y = 0; y < 20; y++)
         {
             flag = true;
@@ -38,6 +40,7 @@ public class Falled_Management : MonoBehaviour {
                 }
             }
             if (flag) {//1列そろった
+                line_num++;
                 GameObject[] cubes = GameObject.FindGameObjectsWithTag("Cube");
                 foreach(GameObject Cube in cubes)
                 {
@@ -51,6 +54,7 @@ public class Falled_Management : MonoBehaviour {
                 y--;
             }
         }
+        Score_Update(line_num);
     }
 
     private static void List_DeleteLine(int y) {
@@ -73,5 +77,21 @@ public class Falled_Management : MonoBehaviour {
             }
         }
     }
+    private static void Score_Update(int num) {
+        Text Score = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
+        int score_int = int.Parse(Score.text);
+        switch (num) {
+            case 1:
+                score_int += 100;
+                break;
+            case 2:
+                score_int += 300;
+                break;
+            case 3:
+                score_int += 1000;
+                break;
+        }
+        Score.text = score_int.ToString();
+    } 
 
 }

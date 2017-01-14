@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Cube_Script : MonoBehaviour {
 
@@ -46,6 +47,12 @@ public class Cube_Script : MonoBehaviour {
     }
 
     private void Cube_Clicked() {
+        Text Score = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
+        int score_int = int.Parse(Score.text);
+        score_int -= 10;
+        Score.text = score_int.ToString();
+
+
         Destroy(Cube);
         transform.parent.GetComponent<Cubes_Script>().Cube_Destroyed(id);
         for (float x = -0.5f; x < 0.5f; x+=0.25f)
