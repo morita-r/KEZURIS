@@ -8,6 +8,18 @@ public class Cubes_Script : MonoBehaviour {
     public float slide_speed;
     public float fall_speed;
 
+    Vector3 touch_start_pos;
+    Vector3 touch_end_pos;
+
+    int touch_mode;
+
+    const int TOUCH = 0;
+    const int SWIPE_RIGHT = 1;
+    const int SWIPE_LEFT = 2;
+    const int SWIPE_DOWN = 3;
+    const int NO_INPUT = -1;
+
+    public static bool pause = false;
     public void Initialize(int[,] list)
     {
         cube_list = list;
@@ -21,6 +33,14 @@ public class Cubes_Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            pause = !pause;
+        }
+        if (pause)
+            return;
+
+
 
         if (stop_flag)
             return;
@@ -53,12 +73,36 @@ public class Cubes_Script : MonoBehaviour {
         }
         else {//制御可能
             pos.z -= slide_speed;
+            pos.y -= slide_speed * Mathf.Tan(Mathf.PI/6);
+            switch (Input_Manager()) {
+                case NO_INPUT:
+                    break;
+                case SWIPE_RIGHT:
+                    Move_Right();
+                    break;
+                case SWIPE_LEFT:
+                    Move_Left();
+                    break;
+                case SWIPE_DOWN:
+                    Move_Down();
+                    return;
+                    break;
+                case TOUCH:
+                    for (int n = 0; n < transform.childCount; n++)
+                    {
+                        transform.GetChild(n).GetComponent<Cube_Script>().Clicked();
+                    }
+                    break;
+            }
+
+
             if (Input.GetKeyDown(KeyCode.RightArrow))
                 Move_Right();
             if (Input.GetKeyDown(KeyCode.LeftArrow))
                 Move_Left();
-            if (pos.z < -10.5f)
+            if (pos.z < -10.1f)
             {
+                pos.z = -10.1f;
                 fall_flag = true;
                 Generate_Cube.generate = true;
             }
@@ -130,6 +174,16 @@ public class Cubes_Script : MonoBehaviour {
         }
 
     }
+
+    void Move_Down() {
+        Vector3 pos = transform.position;
+        pos.y = -5.8f;
+        pos.z = -10.1f;
+        fall_flag = true;
+        Generate_Cube.generate = true;
+        transform.position = pos;
+
+    }
     public void Cube_Destroyed(int[] _id){
         Debug.Log("ID:(" + _id[0].ToString() + "," + _id[1].ToString() + ") Destroyed.");
         cube_list[_id[0], _id[1]] = 0;
@@ -148,4 +202,52 @@ public class Cubes_Script : MonoBehaviour {
         return false;
     }
 
+    private int Input_Manager() {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            touch_start_pos = new Vector3(Input.mousePosition.x,
+                                        Input.mousePosition.y,
+                                        Input.mousePosition.z);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            touch_end_pos = new Vector3(Input.mousePosition.x,
+                                      Input.mousePosition.y,
+                                      Input.mousePosition.z);
+            return GetDirection();
+        }
+        return NO_INPUT;
+    }
+
+    private int GetDirection() {
+        float directionX = touch_end_pos.x - touch_start_pos.x;
+        float directionY = touch_end_pos.y - touch_start_pos.y;
+
+        if (30 < directionX)
+        {
+            //右向きにフリック
+            touch_mode = SWIPE_RIGHT;
+        }
+        else if (-30 > directionX)
+        {
+            //左向きにフリック
+            touch_mode = SWIPE_LEFT;
+        }
+        else if (-30 > directionY) {
+            //下向きにフリック
+            touch_mode = SWIPE_DOWN;
+            //一気に落ちるやつ
+        }
+        else
+        {
+            touch_mode = TOUCH;
+        }
+
+        return touch_mode;
+    }
 }
+
+
+
+

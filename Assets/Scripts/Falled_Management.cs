@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Falled_Management : MonoBehaviour {
     public static int[,] list;
@@ -18,7 +19,7 @@ public class Falled_Management : MonoBehaviour {
         for (int i = 0; i < Cubes.childCount; i++){//Cubesの子のポジションを元にリストに追加
             int[] _id = Cubes.GetChild(i).GetComponent<Cube_Script>().get_Id();
             int[] set_id = new int[2] { _id[0], (int)(_id[1] + 20 + Mathf.Round(Cubes.position.y)) };
-            list[_id[0], (int)(_id[1] + 20 + Mathf.Round(Cubes.position.y))] = 1;
+            list[_id[0], (int)(_id[1] + 20 + Mathf.Round(Cubes.position.y + (10 * Mathf.Tan(Mathf.PI / 6))))] = 1;
             Cubes.GetChild(i).GetComponent<Cube_Script>().set_Fallen_Id(set_id);
         }
     }
@@ -26,6 +27,7 @@ public class Falled_Management : MonoBehaviour {
     public static void Check_Line()
     {
         bool flag;
+        int line_num = 0;
         for (int y = 0; y < 20; y++)
         {
             flag = true;
@@ -38,6 +40,7 @@ public class Falled_Management : MonoBehaviour {
                 }
             }
             if (flag) {//1列そろった
+                line_num++;
                 GameObject[] cubes = GameObject.FindGameObjectsWithTag("Cube");
                 foreach(GameObject Cube in cubes)
                 {
@@ -51,6 +54,7 @@ public class Falled_Management : MonoBehaviour {
                 y--;
             }
         }
+        Score_Update(line_num);
     }
 
     private static void List_DeleteLine(int y) {
@@ -73,5 +77,21 @@ public class Falled_Management : MonoBehaviour {
             }
         }
     }
+    private static void Score_Update(int num) {
+        Text Score = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
+        int score_int = int.Parse(Score.text);
+        switch (num) {
+            case 1:
+                score_int += 100;
+                break;
+            case 2:
+                score_int += 300;
+                break;
+            case 3:
+                score_int += 1000;
+                break;
+        }
+        Score.text = score_int.ToString();
+    } 
 
 }
