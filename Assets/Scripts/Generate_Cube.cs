@@ -5,21 +5,27 @@ public class Generate_Cube : MonoBehaviour {
     public GameObject Parent_Cubes;
     public static bool generate;
     public static int next_num;
-    public GameObject[] Prefab_Cubes; 
-
+    public GameObject[] Prefab_Cubes;
+    int time;
 
 
 	// Use this for initialization
 	void Start () {
         generate = true;
         next_num = Random.Range(0, 10);
+        time = 0;
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (generate)
         {
-            Initialize_Cubes();
+            time++;
+            if (time == 30)
+            {
+                time = 0;
+                Initialize_Cubes();
+            }
         }
         if (Input.GetKeyDown("space"))
         {
