@@ -4,13 +4,16 @@ public class Generate_Cube : MonoBehaviour {
 
     public GameObject Parent_Cubes;
     public static bool generate;
+    public static int next_num;
     public GameObject[] Prefab_Cubes; 
+
 
 
 	// Use this for initialization
 	void Start () {
         generate = true;
-	}
+        next_num = Random.Range(0, 10);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -28,12 +31,19 @@ public class Generate_Cube : MonoBehaviour {
 
     private void Initialize_Cubes() {
         generate = false;
+//        Vector3 init_pos = new Vector3(0,5,0);
         GameObject Parent = Instantiate(Parent_Cubes);
         int[,] list = new int[10, 3];
-        int param = Random.Range(0, 10);
-        list = Placement.return_list(param);
 
-        Generate_Cubes(Parent, list,param);
+        //        int param = Random.Range(0, 10);
+        //        list = Placement.return_list(param);
+        //        Generate_Cubes(Parent, list,param);
+        list = Placement.return_list(next_num);
+        Generate_Cubes(Parent, list, next_num);
+        next_num = Random.Range(0, 10);
+        GameObject next_cubes = GameObject.Find("Next_Cubes");
+        next_cubes.GetComponent<Next_Cube_Script>().Next_Update(next_num);
+
     }
 
 
@@ -45,7 +55,7 @@ public class Generate_Cube : MonoBehaviour {
             {
                 if (list[t, s] == 1)
                 {
-                    GameObject child = Instantiate(Prefab_Cubes[param], new Vector3(t - 4.5f, s, 5), Quaternion.identity);
+                    GameObject child = Instantiate(Prefab_Cubes[param], new Vector3(t - 4.5f, s + (10* Mathf.Tan(Mathf.PI / 6)), 4), Quaternion.identity);
                     child.transform.parent = Parent.transform;
                     int[] _id = new int[2] {t,s};
                     child.GetComponent<Cube_Script>().set_Id(_id);
