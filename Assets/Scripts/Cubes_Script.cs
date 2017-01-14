@@ -2,11 +2,12 @@
 
 public class Cubes_Script : MonoBehaviour {
 
-    public int[,] cube_list;//if 0:broken or null 1:exist
+    public int[,] cube_list;//10*3 if 0:broken or null 1:exist
     bool fall_flag = false;
     bool stop_flag = false;
     public float slide_speed;
     public float fall_speed;
+    int fall_dist;
 
     Vector3 touch_start_pos;
     Vector3 touch_end_pos;
@@ -48,8 +49,20 @@ public class Cubes_Script : MonoBehaviour {
         Vector3 pos = transform.position;
         if (fall_flag)//落下中
         {
+            //new ver
+            stop_flag = true;
+            Vector3 Cubes_pos = transform.position;
+            Cubes_pos.y = -26 + fall_dist;
+            transform.position = Cubes_pos;
+
+
+
+/*
             for (int n = 0; n < transform.childCount; n++)
             {
+
+
+                //過去ver　修正する
                 if (Check_underBlock(transform.GetChild(n)))//下にブロックありor壁
                 {
                     stop_flag = true;
@@ -69,7 +82,7 @@ public class Cubes_Script : MonoBehaviour {
             }
             pos.y -= fall_speed;
             transform.position = pos;
-
+*/
         }
         else {//制御可能
             pos.z -= slide_speed;
@@ -86,7 +99,6 @@ public class Cubes_Script : MonoBehaviour {
                 case SWIPE_DOWN:
                     Move_Down();
                     return;
-                    break;
                 case TOUCH:
                     for (int n = 0; n < transform.childCount; n++)
                     {
@@ -104,6 +116,10 @@ public class Cubes_Script : MonoBehaviour {
             {
                 pos.z = -10.1f;
                 fall_flag = true;
+                //ここで落下ポジション決定する
+                fall_dist = Determin_Fall(gameObject);//返り値が落ちる高さ
+
+
                 Generate_Cube.generate = true;
             }
             if (transform.childCount == 0)
@@ -179,8 +195,8 @@ public class Cubes_Script : MonoBehaviour {
         Vector3 pos = transform.position;
         pos.y = -5.8f;
         pos.z = -10.1f;
-        fall_flag = true;
-        Generate_Cube.generate = true;
+//        fall_flag = true;
+//        Generate_Cube.generate = true;
         transform.position = pos;
 
     }
@@ -245,6 +261,35 @@ public class Cubes_Script : MonoBehaviour {
         }
 
         return touch_mode;
+    }
+
+    int Determin_Fall(GameObject Cubes) {
+        int dist = 0;
+//        int temp;
+        for (int i = 0; i < Cubes.transform.childCount; i++) {
+            for (int k = 19; k > 0; k--)
+            {
+                if (Falled_Management.list[(int)(Cubes.transform.GetChild(i).position.x + 4.5), k] == 1)
+                {//一番上のブロックを探索
+                    int temp = k + 1 - Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1];
+                    bool temp_bool = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().bottom();
+                    if (temp > dist && temp_bool)
+                        dist = temp;
+                    break;
+                }
+            }
+//            temp = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1];
+//            if (temp < dist)
+//                dist = temp;
+        }
+        //dist:地面（一番上のブロック）からの距離の最短（ここまで落ちる）
+        for (int i = 0; i < Cubes.transform.childCount; i++)
+        {
+            Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[0] = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[0];
+            Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[1] = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1] + dist;
+            Falled_Management.list[Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[0], Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[1]] = 1;
+        }
+        return dist;
     }
 }
 

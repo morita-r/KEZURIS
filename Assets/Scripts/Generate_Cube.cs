@@ -55,9 +55,12 @@ public class Generate_Cube : MonoBehaviour {
 
     private void Generate_Cubes(GameObject Parent,int[,]list,int param) {
         Parent.GetComponent<Cubes_Script>().Initialize(list);
-        for (int s = 0; s < 3; s++)
+//        for (int s = 0; s < 3; s++)
+        for (int t = 0; t < 10; t++)
         {
-            for (int t = 0; t < 10; t++)
+            bool is_bottom = true;
+            //            for (int t = 0; t < 10; t++)
+            for (int s = 0; s < 3; s++)
             {
                 if (list[t, s] == 1)
                 {
@@ -67,6 +70,8 @@ public class Generate_Cube : MonoBehaviour {
                     child.GetComponent<Cube_Script>().set_Id(_id);
                     int[] fallen_id = new int[2] { -1, -1 };
                     child.GetComponent<Cube_Script>().set_Fallen_Id(fallen_id);
+                    child.GetComponent<Cube_Script>().set_bottom(is_bottom);
+                    is_bottom = false;
                 }
             }
         }
