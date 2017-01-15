@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class Falled_Management : MonoBehaviour {
     public static int[,] list;
+    public static float level;
 	// Use this for initialization
 	void Start () {
         list = new int[10, 20];
+        level = 0.05f;
 	}
 	
 	// Update is called once per frame
@@ -20,7 +22,7 @@ public class Falled_Management : MonoBehaviour {
             int[] _id = Cubes.GetChild(i).GetComponent<Cube_Script>().get_Id();
             int[] set_id = new int[2] { _id[0], (int)(_id[1] + 20 + Mathf.Round(Cubes.position.y)) };
             list[_id[0], (int)(_id[1] + 20 + Mathf.Round(Cubes.position.y + (10 * Mathf.Tan(Mathf.PI / 6))))] = 1;
-            Cubes.GetChild(i).GetComponent<Cube_Script>().set_Fallen_Id(set_id);
+//            Cubes.GetChild(i).GetComponent<Cube_Script>().set_Fallen_Id(set_id);
         }
     }
 
@@ -83,12 +85,15 @@ public class Falled_Management : MonoBehaviour {
         switch (num) {
             case 1:
                 score_int += 100;
+                level += 0.01f;
                 break;
             case 2:
                 score_int += 300;
+                level += 0.01f;
                 break;
             case 3:
                 score_int += 1000;
+                level += 0.01f;
                 break;
         }
         Score.text = score_int.ToString();

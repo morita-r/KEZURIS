@@ -10,11 +10,19 @@ public class Cube_Script : MonoBehaviour {
     public GameObject Fragment;
     public int[] id;
     public int[] fallen_id;
+    public bool is_bottom;
 	// Use this for initialization
 	void Start () {
-		
+        
 	}
 
+    public bool bottom() {
+        return is_bottom;
+    }
+
+    public void set_bottom(bool bottom) {
+        is_bottom = bottom;
+    }
     public void set_Id(int[] _id) {
         id = _id;
     }
@@ -29,11 +37,6 @@ public class Cube_Script : MonoBehaviour {
 
     public int[] get_fallen_id() { return fallen_id; }
     public int[] get_Id() { return id; }
-	// Update is called once per frame
-	void Update () {
-//        if (Input.GetMouseButtonUp(0))
-            //Clicked();
-	}
 
     public void Clicked()
     {
@@ -52,7 +55,8 @@ public class Cube_Script : MonoBehaviour {
         score_int -= 10;
         Score.text = score_int.ToString();
 
-
+        //bottom更新
+        transform.root.gameObject.GetComponent<Cubes_Script>().Bottom_Update(id);
         Destroy(Cube);
         transform.parent.GetComponent<Cubes_Script>().Cube_Destroyed(id);
         for (float x = -0.5f; x < 0.5f; x+=0.25f)
