@@ -5,6 +5,8 @@ public class Cubes_Script : MonoBehaviour {
     public int[,] cube_list;//10*3 if 0:broken or null 1:exist
     bool fall_flag = false;
     bool stop_flag = false;
+
+    bool input_after_pause;
     float slide_speed;
     public float fall_speed;
     int fall_dist;
@@ -38,13 +40,11 @@ public class Cubes_Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            pause = !pause;
-        }
         if (pause)
+        {
+            input_after_pause = true;
             return;
-
+        }
 
 
         if (stop_flag)
@@ -68,7 +68,7 @@ public class Cubes_Script : MonoBehaviour {
                 for (int n = 0; n < transform.childCount; n++)
                 {
                     int[] _id = transform.GetChild(n).transform.GetComponent<Cube_Script>().get_fallen_id();
-                    if (_id[1] >= 20) {//GAME_OVER
+                    if (_id[1] >= 21) {//GAME_OVER
                         Debug.Log("GameOver!");
                     }
                 }
@@ -240,6 +240,12 @@ public class Cubes_Script : MonoBehaviour {
     }
 
     private int Input_Manager() {
+        if (input_after_pause)
+        {
+            input_after_pause = false;
+            return NO_INPUT;
+
+        }
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             touch_start_pos = new Vector3(Input.mousePosition.x,
