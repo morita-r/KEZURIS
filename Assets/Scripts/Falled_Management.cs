@@ -8,7 +8,9 @@ public class Falled_Management : MonoBehaviour {
     public static float level;
 	// Use this for initialization
 	void Start () {
-        list = new int[10, 20];
+        list = new int[10, 24];//0:最底辺（床）、21<:ゲームオーバーゾーン
+        for (int i = 0; i < 10; i++)
+            list[i, 0] = 1;
         level = 0.05f;
 	}
 	
@@ -30,7 +32,7 @@ public class Falled_Management : MonoBehaviour {
     {
         bool flag;
         int line_num = 0;
-        for (int y = 0; y < 20; y++)
+        for (int y = 1; y < 21; y++)
         {
             flag = true;
             for (int x = 0; x < 10; x++)
@@ -62,7 +64,7 @@ public class Falled_Management : MonoBehaviour {
     private static void List_DeleteLine(int y) {
         for (int i = 0; i < 10; i++)//列削除
             list[i, y] = 0;
-        for (int s = y; s < 19; s++) {//列アップデート
+        for (int s = y; s < 21; s++) {//列アップデート
             for (int i = 0; i < 10; i++)
                 list[i, s] = list[i, s + 1];
         }

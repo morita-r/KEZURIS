@@ -63,6 +63,16 @@ public class Cubes_Script : MonoBehaviour {
                 Cubes_pos.y = -26 + fall_dist;
                 //列削除確認
                 Falled_Management.Check_Line();//列確認
+
+                //GAME_OVER確認
+                for (int n = 0; n < transform.childCount; n++)
+                {
+                    int[] _id = transform.GetChild(n).transform.GetComponent<Cube_Script>().get_fallen_id();
+                    if (_id[1] >= 20) {//GAME_OVER
+                        Debug.Log("GameOver!");
+                    }
+                }
+
             }
             transform.position = Cubes_pos;
 
@@ -261,7 +271,7 @@ public class Cubes_Script : MonoBehaviour {
             //左向きにフリック
             touch_mode = SWIPE_LEFT;
         }
-        else if (-30 > directionY) {
+        else if (-40 > directionY) {
             //下向きにフリック
             touch_mode = SWIPE_DOWN;
             //一気に落ちるやつ
@@ -275,26 +285,29 @@ public class Cubes_Script : MonoBehaviour {
     }
 
     int Determin_Fall(GameObject Cubes) {
-        int dist = 0;
-//        int temp;
+        int dist = -2;
         for (int i = 0; i < Cubes.transform.childCount; i++) {
-            for (int k = 19; k > 0; k--)
+            for (int k = 22; k >= 0; k--)
             {
                 if (Falled_Management.list[(int)(Cubes.transform.GetChild(i).position.x + 4.5), k] == 1)
                 {//一番上のブロックを探索
-                    int temp = k + 1 - Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1];
+                    int[] _id = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().get_Id();
+                    //                    int temp = k + 1 - _id[1];
+                    int temp = k - _id[1];
                     bool temp_bool = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().bottom();
                     if (temp > dist && temp_bool)
                         dist = temp;
                     break;
                 }
             }
+            //下にブロック無し
+
         }
         //dist:地面（一番上のブロック）からの距離の最短（ここまで落ちる）
         for (int i = 0; i < Cubes.transform.childCount; i++)
         {
             Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[0] = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[0];
-            Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[1] = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1] + dist;
+            Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[1] = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1] + dist+1;
             Falled_Management.list[Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[0], Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[1]] = 1;
         }
         return dist;
