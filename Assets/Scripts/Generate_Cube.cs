@@ -5,21 +5,27 @@ public class Generate_Cube : MonoBehaviour {
     public GameObject Parent_Cubes;
     public static bool generate;
     public static int next_num;
-    public GameObject[] Prefab_Cubes; 
-
+    public GameObject[] Prefab_Cubes;
+    int time;
 
 
 	// Use this for initialization
 	void Start () {
         generate = true;
         next_num = Random.Range(0, 10);
+        time = 0;
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (generate)
         {
-            Initialize_Cubes();
+            time++;
+            if (time == 30)
+            {
+                time = 0;
+                Initialize_Cubes();
+            }
         }
         if (Input.GetKeyDown("space"))
         {
@@ -49,9 +55,13 @@ public class Generate_Cube : MonoBehaviour {
 
     private void Generate_Cubes(GameObject Parent,int[,]list,int param) {
         Parent.GetComponent<Cubes_Script>().Initialize(list);
-        for (int s = 0; s < 3; s++)
+        Parent.GetComponent<Cubes_Script>().Set_Speed(Falled_Management.level);
+        //        for (int s = 0; s < 3; s++)
+        for (int t = 0; t < 10; t++)
         {
-            for (int t = 0; t < 10; t++)
+            bool is_bottom = true;
+            //            for (int t = 0; t < 10; t++)
+            for (int s = 0; s < 3; s++)
             {
                 if (list[t, s] == 1)
                 {
@@ -61,6 +71,8 @@ public class Generate_Cube : MonoBehaviour {
                     child.GetComponent<Cube_Script>().set_Id(_id);
                     int[] fallen_id = new int[2] { -1, -1 };
                     child.GetComponent<Cube_Script>().set_Fallen_Id(fallen_id);
+                    child.GetComponent<Cube_Script>().set_bottom(is_bottom);
+                    is_bottom = false;
                 }
             }
         }
