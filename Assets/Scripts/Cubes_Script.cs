@@ -5,7 +5,7 @@ public class Cubes_Script : MonoBehaviour {
     public int[,] cube_list;//10*3 if 0:broken or null 1:exist
     bool fall_flag = false;
     bool stop_flag = false;
-    public float slide_speed;
+    float slide_speed;
     public float fall_speed;
     int fall_dist;
 
@@ -24,6 +24,10 @@ public class Cubes_Script : MonoBehaviour {
     public void Initialize(int[,] list)
     {
         cube_list = list;
+    }
+
+    public void Set_Speed(float level) {
+        slide_speed = level;
     }
 
 
@@ -50,39 +54,46 @@ public class Cubes_Script : MonoBehaviour {
         if (fall_flag)//落下中
         {
             //new ver
-            stop_flag = true;
+//            stop_flag = true;
             Vector3 Cubes_pos = transform.position;
-            Cubes_pos.y = -26 + fall_dist;
+            Cubes_pos.y -=fall_speed;
+//            transform.position = Cubes_pos;
+            if (Cubes_pos.y <= -26 + fall_dist) {//落下完了
+                stop_flag = true;
+                Cubes_pos.y = -26 + fall_dist;
+                //列削除確認
+                Falled_Management.Check_Line();//列確認
+            }
             transform.position = Cubes_pos;
 
 
 
-/*
-            for (int n = 0; n < transform.childCount; n++)
-            {
+            /*
+                        for (int n = 0; n < transform.childCount; n++)
+                        {
 
 
-                //過去ver　修正する
-                if (Check_underBlock(transform.GetChild(n)))//下にブロックありor壁
-                {
-                    stop_flag = true;
-                    //縦ポジション丸め込み（位置調整）
-                    Vector3 pos_Cubes = transform.position;
-                    pos_Cubes.y = Mathf.RoundToInt(pos_Cubes.y);
-                    transform.position = pos_Cubes;
+                            //過去ver　修正する
+                            if (Check_underBlock(transform.GetChild(n)))//下にブロックありor壁
+                            {
+                                stop_flag = true;
+                                //縦ポジション丸め込み（位置調整）
+                                Vector3 pos_Cubes = transform.position;
+                                pos_Cubes.y = Mathf.RoundToInt(pos_Cubes.y);
+                                transform.position = pos_Cubes;
 
 
 
-                    Falled_Management.List_Update(transform);//Falledのリストアップデート
-                    Falled_Management.Check_Line();//列確認
-                    //列削除（リストアップデート）
-                    //段下げる
-                    return;
-                }
-            }
-            pos.y -= fall_speed;
-            transform.position = pos;
-*/
+                                Falled_Management.List_Update(transform);//Falledのリストアップデート
+                                Falled_Management.Check_Line();//列確認
+                                //列削除（リストアップデート）
+                                //段下げる
+                                return;
+                            }
+                        }
+                        pos.y -= fall_speed;
+                        transform.position = pos;
+            */
         }
         else {//制御可能
             pos.z -= slide_speed;
@@ -278,9 +289,6 @@ public class Cubes_Script : MonoBehaviour {
                     break;
                 }
             }
-//            temp = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1];
-//            if (temp < dist)
-//                dist = temp;
         }
         //dist:地面（一番上のブロック）からの距離の最短（ここまで落ちる）
         for (int i = 0; i < Cubes.transform.childCount; i++)
@@ -290,6 +298,22 @@ public class Cubes_Script : MonoBehaviour {
             Falled_Management.list[Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[0], Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[1]] = 1;
         }
         return dist;
+    }
+
+    public void Bottom_Update(int[] id) {//id:clicked cube
+        for (int i = 0; i < 3; i++)
+        {
+            for (int n = 0; n < transform.childCount; n++)
+            {
+                int[] _id = transform.GetChild(n).GetComponent<Cube_Script>().get_Id();
+                if (id[0] == _id[0] && id[1] == _id[1])//削除ブロックは無視
+                    continue;
+                if (id[0] == _id[0] && _id[1] == i) {//削除ブロックと同列の最下ブロック
+                    transform.GetChild(n).GetComponent<Cube_Script>().set_bottom(true);
+                    return;
+                }
+            }
+        }
     }
 }
 

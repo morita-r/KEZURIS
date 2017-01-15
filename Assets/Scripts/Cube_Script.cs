@@ -55,7 +55,8 @@ public class Cube_Script : MonoBehaviour {
         score_int -= 10;
         Score.text = score_int.ToString();
 
-
+        //bottom更新
+        transform.root.gameObject.GetComponent<Cubes_Script>().Bottom_Update(id);
         Destroy(Cube);
         transform.parent.GetComponent<Cubes_Script>().Cube_Destroyed(id);
         for (float x = -0.5f; x < 0.5f; x+=0.25f)

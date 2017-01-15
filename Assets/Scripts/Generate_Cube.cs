@@ -55,7 +55,8 @@ public class Generate_Cube : MonoBehaviour {
 
     private void Generate_Cubes(GameObject Parent,int[,]list,int param) {
         Parent.GetComponent<Cubes_Script>().Initialize(list);
-//        for (int s = 0; s < 3; s++)
+        Parent.GetComponent<Cubes_Script>().Set_Speed(Falled_Management.level);
+        //        for (int s = 0; s < 3; s++)
         for (int t = 0; t < 10; t++)
         {
             bool is_bottom = true;
