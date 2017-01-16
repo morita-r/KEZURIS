@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
-
+using UnityEngine.UI;
 public class Cubes_Script : MonoBehaviour {
 
     public int[,] cube_list;//10*3 if 0:broken or null 1:exist
     bool fall_flag = false;
     bool stop_flag = false;
+
+    bool input_after_pause;
     float slide_speed;
     public float fall_speed;
     int fall_dist;
@@ -19,6 +21,8 @@ public class Cubes_Script : MonoBehaviour {
     const int SWIPE_LEFT = 2;
     const int SWIPE_DOWN = 3;
     const int NO_INPUT = -1;
+
+    public GameObject gameover_board;
 
     public static bool pause = false;
     public void Initialize(int[,] list)
@@ -38,13 +42,11 @@ public class Cubes_Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            pause = !pause;
-        }
         if (pause)
+        {
+            input_after_pause = true;
             return;
-
+        }
 
 
         if (stop_flag)
@@ -63,37 +65,40 @@ public class Cubes_Script : MonoBehaviour {
                 Cubes_pos.y = -26 + fall_dist;
                 //列削除確認
                 Falled_Management.Check_Line();//列確認
+
+                //GAME_OVER確認
+                for (int n = 0; n < transform.childCount; n++)
+                {
+                    int[] _id = transform.GetChild(n).transform.GetComponent<Cube_Script>().get_fallen_id();
+                    if (_id[1] >= 21) {//GAME_OVER
+                        Debug.Log("GameOver!");
+                        Canvas_Script.SetActive("Button_Title",true);
+                        Canvas_Script.SetActive("Button_Again", true);
+                        Canvas_Script.SetActive("Button_Pause", false);
+                        Canvas_Script.SetActive("Text_Result", true);
+                        Canvas_Script.SetActive("Text_Result_Label", true);
+
+                        Text Score = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
+                        Text Result = GameObject.FindGameObjectWithTag("Result").GetComponent<Text>();
+                        Result.text = Score.text;
+
+                        Canvas_Script.SetActive("Text_Score", false);
+                        Canvas_Script.SetActive("Text_Score_Label", false);
+
+                        Instantiate(gameover_board);
+                        Generate_Cube.generate = false;
+
+                        return;
+
+                    }
+                }
+
             }
             transform.position = Cubes_pos;
 
 
 
-            /*
-                        for (int n = 0; n < transform.childCount; n++)
-                        {
-
-
-                            //過去ver　修正する
-                            if (Check_underBlock(transform.GetChild(n)))//下にブロックありor壁
-                            {
-                                stop_flag = true;
-                                //縦ポジション丸め込み（位置調整）
-                                Vector3 pos_Cubes = transform.position;
-                                pos_Cubes.y = Mathf.RoundToInt(pos_Cubes.y);
-                                transform.position = pos_Cubes;
-
-
-
-                                Falled_Management.List_Update(transform);//Falledのリストアップデート
-                                Falled_Management.Check_Line();//列確認
-                                //列削除（リストアップデート）
-                                //段下げる
-                                return;
-                            }
-                        }
-                        pos.y -= fall_speed;
-                        transform.position = pos;
-            */
+            
         }
         else {//制御可能
             pos.z -= slide_speed;
@@ -230,6 +235,12 @@ public class Cubes_Script : MonoBehaviour {
     }
 
     private int Input_Manager() {
+        if (input_after_pause)
+        {
+            input_after_pause = false;
+            return NO_INPUT;
+
+        }
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             touch_start_pos = new Vector3(Input.mousePosition.x,
@@ -261,7 +272,7 @@ public class Cubes_Script : MonoBehaviour {
             //左向きにフリック
             touch_mode = SWIPE_LEFT;
         }
-        else if (-30 > directionY) {
+        else if (-40 > directionY) {
             //下向きにフリック
             touch_mode = SWIPE_DOWN;
             //一気に落ちるやつ
@@ -275,26 +286,29 @@ public class Cubes_Script : MonoBehaviour {
     }
 
     int Determin_Fall(GameObject Cubes) {
-        int dist = 0;
-//        int temp;
+        int dist = -2;
         for (int i = 0; i < Cubes.transform.childCount; i++) {
-            for (int k = 19; k > 0; k--)
+            for (int k = 22; k >= 0; k--)
             {
                 if (Falled_Management.list[(int)(Cubes.transform.GetChild(i).position.x + 4.5), k] == 1)
                 {//一番上のブロックを探索
-                    int temp = k + 1 - Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1];
+                    int[] _id = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().get_Id();
+                    //                    int temp = k + 1 - _id[1];
+                    int temp = k - _id[1];
                     bool temp_bool = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().bottom();
                     if (temp > dist && temp_bool)
                         dist = temp;
                     break;
                 }
             }
+            //下にブロック無し
+
         }
         //dist:地面（一番上のブロック）からの距離の最短（ここまで落ちる）
         for (int i = 0; i < Cubes.transform.childCount; i++)
         {
             Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[0] = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[0];
-            Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[1] = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1] + dist;
+            Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[1] = Cubes.transform.GetChild(i).GetComponent<Cube_Script>().id[1] + dist+1;
             Falled_Management.list[Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[0], Cubes.transform.GetChild(i).GetComponent<Cube_Script>().fallen_id[1]] = 1;
         }
         return dist;
