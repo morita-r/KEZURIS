@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using UnityEngine.UI;
 public class Cubes_Script : MonoBehaviour {
 
     public int[,] cube_list;//10*3 if 0:broken or null 1:exist
@@ -21,6 +21,8 @@ public class Cubes_Script : MonoBehaviour {
     const int SWIPE_LEFT = 2;
     const int SWIPE_DOWN = 3;
     const int NO_INPUT = -1;
+
+    public GameObject gameover_board;
 
     public static bool pause = false;
     public void Initialize(int[,] list)
@@ -70,6 +72,24 @@ public class Cubes_Script : MonoBehaviour {
                     int[] _id = transform.GetChild(n).transform.GetComponent<Cube_Script>().get_fallen_id();
                     if (_id[1] >= 21) {//GAME_OVER
                         Debug.Log("GameOver!");
+                        Canvas_Script.SetActive("Button_Title",true);
+                        Canvas_Script.SetActive("Button_Again", true);
+                        Canvas_Script.SetActive("Button_Pause", false);
+                        Canvas_Script.SetActive("Text_Result", true);
+                        Canvas_Script.SetActive("Text_Result_Label", true);
+
+                        Text Score = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
+                        Text Result = GameObject.FindGameObjectWithTag("Result").GetComponent<Text>();
+                        Result.text = Score.text;
+
+                        Canvas_Script.SetActive("Text_Score", false);
+                        Canvas_Script.SetActive("Text_Score_Label", false);
+
+                        Instantiate(gameover_board);
+                        Generate_Cube.generate = false;
+
+                        return;
+
                     }
                 }
 
@@ -78,32 +98,7 @@ public class Cubes_Script : MonoBehaviour {
 
 
 
-            /*
-                        for (int n = 0; n < transform.childCount; n++)
-                        {
-
-
-                            //過去ver　修正する
-                            if (Check_underBlock(transform.GetChild(n)))//下にブロックありor壁
-                            {
-                                stop_flag = true;
-                                //縦ポジション丸め込み（位置調整）
-                                Vector3 pos_Cubes = transform.position;
-                                pos_Cubes.y = Mathf.RoundToInt(pos_Cubes.y);
-                                transform.position = pos_Cubes;
-
-
-
-                                Falled_Management.List_Update(transform);//Falledのリストアップデート
-                                Falled_Management.Check_Line();//列確認
-                                //列削除（リストアップデート）
-                                //段下げる
-                                return;
-                            }
-                        }
-                        pos.y -= fall_speed;
-                        transform.position = pos;
-            */
+            
         }
         else {//制御可能
             pos.z -= slide_speed;
