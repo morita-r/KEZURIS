@@ -13,4 +13,9 @@ public class Button_Title_Script : MonoBehaviour {
     void Update () {
 		
 	}
+
+    public void button_title()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("title");
+    }
 }

@@ -13,8 +13,8 @@ public class Button_Resume_Script : MonoBehaviour {
         Cubes_Script.pause = false;
         Fragment_Script.pause = false;
         gameObject.SetActive(false);
+        Canvas_Script.SetActive("Button_Title", false);
         Destroy(GameObject.FindGameObjectWithTag("Pause_Board"));
-
         Canvas_Script.SetActive("Button_Pause", true);
     }
 }
