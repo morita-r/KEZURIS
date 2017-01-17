@@ -77,6 +77,7 @@ public class Cubes_Script : MonoBehaviour {
                         Canvas_Script.SetActive("Button_Pause", false);
                         Canvas_Script.SetActive("Text_Result", true);
                         Canvas_Script.SetActive("Text_Result_Label", true);
+                        Canvas_Script.SetActive("Text_Gameover", true);
 
                         Text Score = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
                         Text Result = GameObject.FindGameObjectWithTag("Result").GetComponent<Text>();
@@ -261,18 +262,25 @@ public class Cubes_Script : MonoBehaviour {
     private int GetDirection() {
         float directionX = touch_end_pos.x - touch_start_pos.x;
         float directionY = touch_end_pos.y - touch_start_pos.y;
-
-        if (30 < directionX)
+        if (Mathf.Abs(directionX) - Mathf.Abs(directionY) > 0)
         {
-            //右向きにフリック
-            touch_mode = SWIPE_RIGHT;
+            if (30 < directionX)
+            {
+                //右向きにフリック
+                touch_mode = SWIPE_RIGHT;
+            }
+            else if (-30 > directionX)
+            {
+                //左向きにフリック
+                touch_mode = SWIPE_LEFT;
+            }
+            else
+            {
+                touch_mode = TOUCH;
+            }
         }
-        else if (-30 > directionX)
+        else if (-30 > directionY)
         {
-            //左向きにフリック
-            touch_mode = SWIPE_LEFT;
-        }
-        else if (-40 > directionY) {
             //下向きにフリック
             touch_mode = SWIPE_DOWN;
             //一気に落ちるやつ

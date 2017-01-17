@@ -87,15 +87,15 @@ public class Falled_Management : MonoBehaviour {
         switch (num) {
             case 1:
                 score_int += 100;
-                level += 0.01f;
+//                level += 0.01f;
                 break;
             case 2:
                 score_int += 300;
-                level += 0.01f;
+//                level += 0.01f;
                 break;
             case 3:
                 score_int += 1000;
-                level += 0.01f;
+//                level += 0.01f;
                 break;
         }
         Score.text = score_int.ToString();

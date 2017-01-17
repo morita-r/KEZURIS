@@ -16,5 +16,8 @@ public class Button_Start : MonoBehaviour {
 
     public void button_start() {
         UnityEngine.SceneManagement.SceneManager.LoadScene("stage");
+        Cubes_Script.pause = false;
+        Fragment_Script.pause = false;
+
     }
 }
