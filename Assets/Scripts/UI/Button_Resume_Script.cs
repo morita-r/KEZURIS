@@ -16,5 +16,9 @@ public class Button_Resume_Script : MonoBehaviour {
         Canvas_Script.SetActive("Button_Title", false);
         Destroy(GameObject.FindGameObjectWithTag("Pause_Board"));
         Canvas_Script.SetActive("Button_Pause", true);
+
+        Canvas_Script.SetActive("Text_Highscore", true);
+        Canvas_Script.SetActive("Text_Highscore_Label", true);
+
     }
 }

@@ -14,5 +14,8 @@ public class Button_Pause_Script : MonoBehaviour {
         Instantiate(pause_board);
         Canvas_Script.SetActive("Button_Resume", true);
         Canvas_Script.SetActive("Button_Title", true);
+        Canvas_Script.SetActive("Text_Highscore", false);
+        Canvas_Script.SetActive("Text_Highscore_Label", false);
+
     }
 }

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 public class Cubes_Script : MonoBehaviour {
+    private string HIGH_SCORE = "HIGH_SCORE";
+
 
     public int[,] cube_list;//10*3 if 0:broken or null 1:exist
     bool fall_flag = false;
@@ -79,12 +81,22 @@ public class Cubes_Script : MonoBehaviour {
                         Canvas_Script.SetActive("Text_Result_Label", true);
                         Canvas_Script.SetActive("Text_Gameover", true);
 
+
                         Text Score = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
                         Text Result = GameObject.FindGameObjectWithTag("Result").GetComponent<Text>();
                         Result.text = Score.text;
+                        int score = int.Parse(Score.text);
 
                         Canvas_Script.SetActive("Text_Score", false);
                         Canvas_Script.SetActive("Text_Score_Label", false);
+                        Canvas_Script.SetActive("Text_Highscore", false);
+                        Canvas_Script.SetActive("Text_Highscore_Label", false);
+
+                        int high_score = PlayerPrefs.GetInt(HIGH_SCORE, 0);
+                        if(score > high_score)
+                            PlayerPrefs.SetInt(HIGH_SCORE,score);
+
+
 
                         Instantiate(gameover_board);
                         Generate_Cube.generate = false;
