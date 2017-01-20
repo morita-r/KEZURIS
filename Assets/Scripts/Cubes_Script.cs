@@ -60,7 +60,7 @@ public class Cubes_Script : MonoBehaviour {
             //new ver
 //            stop_flag = true;
             Vector3 Cubes_pos = transform.position;
-            Cubes_pos.y -=fall_speed;
+            Cubes_pos.y -=fall_speed * Time.deltaTime;
 //            transform.position = Cubes_pos;
             if (Cubes_pos.y <= -26 + fall_dist) {//落下完了
                 stop_flag = true;
@@ -114,8 +114,8 @@ public class Cubes_Script : MonoBehaviour {
             
         }
         else {//制御可能
-            pos.z -= slide_speed;
-            pos.y -= slide_speed * Mathf.Tan(Mathf.PI/6);
+            pos.z -= slide_speed * Time.deltaTime;
+            pos.y -= slide_speed * Mathf.Tan(Mathf.PI/6) * Time.deltaTime;
             switch (Input_Manager()) {
                 case NO_INPUT:
                     break;

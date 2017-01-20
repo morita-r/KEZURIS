@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Canvas_Script : MonoBehaviour {
     static Canvas _canvas;
-
 	// Use this for initialization
 	void Start () {
         _canvas = GetComponent<Canvas>();
+//        PlayerPrefs.DeleteAll();
     }
 	
 	// Update is called once per frame
@@ -17,6 +17,7 @@ public class Canvas_Script : MonoBehaviour {
 
     public static void SetActive(string name, bool b)
     {
+//        _canvas = GetComponent<Canvas>();
         foreach (Transform child in _canvas.transform)
         {
             // 子の要素をたどる

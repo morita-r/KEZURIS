@@ -11,7 +11,7 @@ public class Falled_Management : MonoBehaviour {
         list = new int[10, 24];//0:最底辺（床）、21<:ゲームオーバーゾーン
         for (int i = 0; i < 10; i++)
             list[i, 0] = 1;
-        level = 0.05f;
+        level = 2f;
 	}
 	
 	// Update is called once per frame
@@ -98,6 +98,13 @@ public class Falled_Management : MonoBehaviour {
 //                level += 0.01f;
                 break;
         }
+        if (score_int < 1000)
+            level = 2f;
+        else if (score_int < 2000)
+            level = 2.25f;
+        else if (score_int < 3000)
+            level = 2.5f;
+        else level = 3f;
         Score.text = score_int.ToString();
     } 
 
