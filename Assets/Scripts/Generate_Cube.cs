@@ -1,23 +1,38 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Generate_Cube : MonoBehaviour {
 
     public GameObject Parent_Cubes;
+    public static bool tutorial;
     public static bool generate;
     public static int next_num;
     public GameObject[] Prefab_Cubes;
     int time;
 
 
+
 	// Use this for initialization
 	void Start () {
+//        tutorial = true;
         generate = true;
         next_num = Random.Range(0, 10);
         time = 0;
+        if (tutorial)
+        { Tutorial_Canvas_Script _canvas = GameObject.Find("Canvas").GetComponent<Tutorial_Canvas_Script>();
+            _canvas.get_canvas();
+            _canvas._SetActive("Button_Start", false);
+        }
     }
 	
 	// Update is called once per frame
 	void Update () {
+        if (tutorial) {
+
+        }
+
+
+
         if (generate)
         {
             time++;
@@ -54,8 +69,17 @@ public class Generate_Cube : MonoBehaviour {
 
 
     private void Generate_Cubes(GameObject Parent,int[,]list,int param) {
-        Parent.GetComponent<Cubes_Script>().Initialize(list);
-        Parent.GetComponent<Cubes_Script>().Set_Speed(Falled_Management.level);
+        if (tutorial)
+        {
+
+            Parent.GetComponent<Tutorial_Cubes_script>().Initialize(list);
+            Parent.GetComponent<Tutorial_Cubes_script>().Set_Speed(Falled_Management.level);
+        }else
+        {
+            Parent.GetComponent<Cubes_Script>().Initialize(list);
+            Parent.GetComponent<Cubes_Script>().Set_Speed(Falled_Management.level);
+
+        }
         //        for (int s = 0; s < 3; s++)
         for (int t = 0; t < 10; t++)
         {
